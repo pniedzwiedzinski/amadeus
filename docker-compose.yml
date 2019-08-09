@@ -1,0 +1,41 @@
+version: "2"
+services:
+  amadeus:
+    container_name: amadeus_homepage
+    image: amadeus
+    ports: 
+      - "80:8080"
+    restart: always
+  pihole:
+    container_name: pihole
+    image: pihole/pihole
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "5999:80"
+      - "6000:443"
+    environment:
+      TZ: Europe/Warsaw
+      WEBPASSWORD: ${PIHOLE_PASSWORD}
+      ServerIP: 192.168.1.144
+      DNS1: 8.8.8.8
+      DNS2: 8.8.4.4
+    volumes:
+      - './pihole/etc-pihole/:/etc/pihole/'
+      - './pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    restart: always
+  home_assistant:
+    container_name: home-assistant
+    image: homeassistant/raspberrypi3-homeassistant
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./homeassistant:/config
+    network_mode: host
+    privileged: true
+    environment:
+      - TZ=${TZ}
+
