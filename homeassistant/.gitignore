@@ -1,0 +1,10 @@
+tts
+deps
+*.log
+*.db*
+secrets.yaml
+.HA_VERSION
+.cloud
+.ios.conf
+.homekit.state
+.storage

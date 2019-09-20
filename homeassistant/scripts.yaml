@@ -1,0 +1,18 @@
+'1559482796924':
+  alias: Włączony telewizor
+  sequence:
+  - alias: ''
+    data:
+      message: Telewizor jest włączony od 45 minut
+      target:
+      - device/PatrykN
+      title: Telewizor jest włączony
+    service: notify.pushbullet
+'1559502949781':
+  alias: clean_await_loop
+  sequence:
+  - delay: 00:15
+  - service: script.clean
+'1559592362731':
+  alias: ''
+  sequence: []

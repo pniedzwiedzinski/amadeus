@@ -1,0 +1,203 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: 52.3408
+  longitude: 16.8743
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 0
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Warsaw
+  # Customization file
+  customize: !include customize.yaml
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Discover some devices automatically
+discovery:
+
+alert:
+  free_space:
+    title: 'Free disk space is low'
+    name: 'Free disk space is low'
+    entity_id: binary_sensor.low_free_space
+    repeat: 30
+    notifiers:
+      - pushbullet
+
+
+# Binary sensors
+binary_sensor:
+  - platform: template
+    sensors:
+      low_free_space:
+        value_template: '{{ states("sensor.free_space")|int < 1000 }}'
+        friendly_name: 'Free disk space is low'          
+
+# Sensors
+sensor:
+  # Weather prediction
+  - platform: yr
+  - platform: pi_hole
+    host: "192.168.1.144:5999"
+  - platform: command_line
+    name: db_size
+    command: "stat -c %s /config/home-assistant_v2.db"
+    unit_of_measurement: "MB"
+    value_template: '{{ (value|int / 1024 / 1024)|round(1) }}'
+    scan_interval: 900
+  - platform: command_line
+    name: free_space
+    command: "df / -k | tail -1 | awk '{print $4}'"
+    unit_of_measurement: "MB"
+    value_template: '{{ (value|int / 1024)|round(1) }}'
+    scan_interval: 900
+  - platform: systemmonitor
+    resources:
+      - type: memory_use_percent
+      - type: network_in
+        arg: eth0
+      - type: network_out
+        arg: eth0
+      - type: processor_use
+  - platform: command_line
+    name: patryk_iphone_se
+    command: "ping 192.168.1.154 -c 1 > /dev/null ; echo $?"
+    unit_of_measurement: "Status"
+    value_template: >
+            {% if value == '0' %}
+            Online
+            {% else %}
+            Offline
+            {% endif %}
+    scan_interval: 100
+  - platform: command_line
+    name: patryk_mac
+    command: "ping 192.168.1.165 -c 1 > /dev/null ; echo $?"
+    unit_of_measurement: "Status"
+    value_template: >
+            {% if value == '0' %}
+            Online
+            {% else %}
+            Offline
+            {% endif %}
+    scan_interval: 100
+  - platform: command_line
+    name: dominika_honor_10
+    command: "ping 192.168.1.179 -c 1 > /dev/null ; echo $?"
+    unit_of_measurement: "Status"
+    value_template: >
+            {% if value == '0' %}
+            Online
+            {% else %}
+            Offline
+            {% endif %}
+    scan_interval: 100
+  - platform: command_line
+    name: szymon_g6
+    command: "ping 192.168.1.181 -c 1 > /dev/null ; echo $?"
+    unit_of_measurement: "Status"
+    value_template: >
+            {% if value == '0' %}
+            Online
+            {% else %}
+            Offline
+            {% endif %}
+    scan_interval: 100
+  - platform: command_line
+    name: szymon_lap
+    command: "ping 192.168.1.128 -c 1 > /dev/null ; echo $?"
+    unit_of_measurement: "Status"
+    value_template: >
+            {% if value == '0' %}
+            Online
+            {% else %}
+            Offline
+            {% endif %}
+    scan_interval: 100
+  - platform: command_line
+    name: monika_p20
+    command: "ping 192.168.1.196 -c 1 > /dev/null ; echo $?"
+    unit_of_measurement: "Status"
+    value_template: >
+            {% if value == '0' %}
+            Online
+            {% else %}
+            Offline
+            {% endif %}
+    scan_interval: 100
+  - platform: command_line
+    name: monika_a5
+    command: "ping 192.168.1.139 -c 1 > /dev/null ; echo $?"
+    unit_of_measurement: "Status"
+    value_template: >
+            {% if value == '0' %}
+            Online
+            {% else %}
+            Offline
+            {% endif %}
+    scan_interval: 100
+  - platform: command_line
+    name: hades
+    command: "ping 192.168.1.119 -c 1 > /dev/null ; echo $?"
+    unit_of_measurement: "Status"
+    value_template: >
+            {% if value == '0' %}
+            Online
+            {% else %}
+            Offline
+            {% endif %}
+    scan_interval: 100
+
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+vacuum:
+  - platform: xiaomi_miio
+    host: 192.168.1.172
+    token: !secret xiaomi_vacuum_token
+
+fan:
+  - platform: template
+    fans:
+      xiaomi_fan:
+        friendly_name: "Xiaomi Vacuum"
+        value_template: "{%if states('vacuum.xiaomi_vacuum_cleaner') == 'cleaning' %}on{%elif states('vacuum.xiaomi_vacuum_cleaner') == 'paused' %}on{%else %}off{% endif %}"
+        speed_template: "{{ state_attr('vacuum.xiaomi_vacuum_cleaner', 'fan_speed') }}"
+        turn_on:
+          service: vacuum.start
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+        turn_off:
+          service: vacuum.return_to_base
+          entity_id: vacuum.xiaomi_vacuum_cleaner
+        set_speed:
+          service: vacuum.set_fan_speed
+          data_template:
+            fan_speed: "{{ speed }}"
+            entity_id: vacuum.xiaomi_vacuum_cleaner
+        speeds:
+          - 'off'
+          - 'Quiet'
+          - 'Balanced'
+          - 'Turbo'
+          - 'Max'
+
+homekit:
+
+notify:
+  - name: pushbullet
+    platform: pushbullet
+    api_key: !secret pushbullet_token
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

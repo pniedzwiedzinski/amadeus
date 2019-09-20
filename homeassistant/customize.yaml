@@ -1,0 +1,3 @@
+sensor.db_size:
+  friendly_name: SQLite DB size
+  icon: mdi:database
