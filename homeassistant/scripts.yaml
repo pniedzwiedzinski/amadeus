@@ -13,6 +13,4 @@
   sequence:
   - delay: 00:15
   - service: script.clean
-'1559592362731':
-  alias: ''
-  sequence: []
+

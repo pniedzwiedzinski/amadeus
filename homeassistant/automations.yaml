@@ -6,39 +6,40 @@
   condition:
   - condition: time
     weekday:
-      - sun
-      - mon
-      - tue
-      - wed
-      - thu
+    - sun
+    - mon
+    - tue
+    - wed
+    - thu
   action:
   - data: {}
     service: vacuum.start
-
+  - data:
+      fan_speed: Quiet
+    service: vacuum.set_fan_speed
 - alias: Telewizor idle
   trigger:
-    - platform: state
-      entity_id: media_player.kuchnia
-      to: "off"
-      for:
-        minutes: 45
-    - platform: state
-      entity_id: media_player.kuchnia
-      to: "idle"
-      for:
-        minutes: 45
+  - platform: state
+    entity_id: media_player.kuchnia
+    to: 'off'
+    for:
+      minutes: 45
+  - platform: state
+    entity_id: media_player.kuchnia
+    to: idle
+    for:
+      minutes: 45
   action:
     service: homeassistant.turn_on
     entity_id: script.1559482796924
-
 - alias: Telewizor turned off
   trigger:
-    - platform: state
-      entity_id: media_player.kuchnia
-      to: "unavailable"
-    - platform: state
-      entity_id: media_player.kuchnia
-      to: "playing"
+  - platform: state
+    entity_id: media_player.kuchnia
+    to: unavailable
+  - platform: state
+    entity_id: media_player.kuchnia
+    to: playing
   action:
     service: homeassistant.turn_off
     entity_id: script.1559482796924
