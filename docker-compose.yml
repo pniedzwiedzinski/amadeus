@@ -1,11 +1,11 @@
 version: "2"
 services:
-  amadeus:
-    container_name: amadeus_homepage
-    build: app
-    ports: 
-      - "80:8080"
-    restart: always
+        #amadeus:
+        #container_name: amadeus_homepage
+        #build: app
+        #ports: 
+        #- "80:8080"
+        #restart: always
   pihole:
     container_name: pihole
     image: pihole/pihole
@@ -39,3 +39,15 @@ services:
     environment:
       - TZ=${TZ}
 
+  hyperion:
+    image: fred92/docker_hyperion:latest
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - LD_LIBRARY_PATH=/opt/vc/lib
+    volumes:
+      - /etc/hyperion:/etc/hyperion:ro
+      - /opt/vc:/opt/vc
+    devices:
+      - /dev/spidev0.0:/dev/spidev0.0
+      - /dev/video0:/dev/video0
