@@ -51,3 +51,11 @@ services:
     devices:
       - /dev/spidev0.0:/dev/spidev0.0
       - /dev/video0:/dev/video0
+
+  gemini:
+    build: gemini_server
+    network_mode: host
+    volumes:
+      - /home/pi/gmi:/data
+      - /home/pi/.gmi.keys:/keys
+    restart: unless-stopped
