@@ -40,7 +40,7 @@ services:
       - TZ=${TZ}
 
   hyperion:
-    image: fred92/docker_hyperion:latest
+    image: fred92/hyperion:latest
     restart: unless-stopped
     network_mode: host
     environment:
