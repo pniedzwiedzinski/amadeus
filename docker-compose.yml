@@ -3,7 +3,7 @@ services:
         #amadeus:
         #container_name: amadeus_homepage
         #build: app
-        #ports: 
+        #ports:
         #- "80:8080"
         #restart: always
   pihole:
@@ -27,17 +27,17 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     restart: always
-  home_assistant:
-    container_name: home-assistant
-    image: homeassistant/raspberrypi3-homeassistant
-    restart: unless-stopped
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ./homeassistant:/config
-    network_mode: host
-    privileged: true
-    environment:
-      - TZ=${TZ}
+  # home_assistant:
+  #   container_name: home-assistant
+  #   image: homeassistant/raspberrypi3-homeassistant
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - ./homeassistant:/config
+  #   network_mode: host
+  #   privileged: true
+  #   environment:
+  #     - TZ=${TZ}
 
   hyperion:
     image: fred92/hyperion:latest
@@ -52,10 +52,10 @@ services:
       - /dev/spidev0.0:/dev/spidev0.0
       - /dev/video0:/dev/video0
 
-  gemini:
-    build: gemini_server
-    network_mode: host
-    volumes:
-      - /home/pi/gmi:/data
-      - /home/pi/.gmi.keys:/keys
-    restart: unless-stopped
+  # gemini:
+  #   build: gemini_server
+  #   network_mode: host
+  #   volumes:
+  #     - /home/pi/gmi:/data
+  #     - /home/pi/.gmi.keys:/keys
+  #   restart: unless-stopped
